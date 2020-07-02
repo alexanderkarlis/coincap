@@ -71,6 +71,7 @@ func Consume() {
 	table := widgets.NewTable()
 	table.Title = "CoinCap coins 💰"
 	table.TextStyle = ui.NewStyle(ui.ColorWhite)
+	table.BorderStyle.Fg = ui.ColorBlue
 	width, height := ui.TerminalDimensions()
 	table.SetRect(0, 0, width, height)
 
