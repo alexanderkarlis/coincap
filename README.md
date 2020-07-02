@@ -1,7 +1,7 @@
 # CoinCap Price Streamer 💰
 A program that runs in a terminal tab and streams cryptocurrency prices from [CoinCap's](https://docs.coincap.io/?version=latest) websocket stream. 
 
-![alt text](https://media.giphy.com/media/Ln41AuY0aNBlLeo59I/giphy.gif)
+![alt text](https://media.giphy.com/media/MEF2w6McJQ4IX8RDGh/giphy.gif)
 
 #### *Notes*:
  Having RabbitMQ handle the message busing is overkill, yes. I was curious about it, and I 
