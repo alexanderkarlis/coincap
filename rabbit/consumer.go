@@ -70,8 +70,15 @@ func Consume() {
 	defer ui.Close()
 	table := widgets.NewTable()
 	table.Title = "CoinCap coins 💰"
-	table.TextStyle = ui.NewStyle(ui.ColorWhite)
-	table.BorderStyle.Fg = ui.ColorBlue
+	// RowStyles     map[int]Style
+	styleMap := map[int]ui.Style{}
+	styleMap[0] = ui.Style{}
+	styleMap[1] = ui.Style{Bg: ui.ColorMagenta}
+	styleMap[2] = ui.Style{}
+	fmt.Printf("style map: %+v\n", styleMap)
+
+	table.RowStyles = styleMap
+	table.TextStyle
 	width, height := ui.TerminalDimensions()
 	table.SetRect(0, 0, width, height)
 
