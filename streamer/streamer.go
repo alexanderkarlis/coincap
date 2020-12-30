@@ -30,7 +30,7 @@ type SocketMessage struct {
 	Message     string
 	Coinlist    []string
 	CoinMap     map[string]string
-	Table       table.CoinTable
+	Tab         table.CoinTab
 	quitChan    chan struct{}
 	chanMessage chan map[string]string
 }
@@ -42,18 +42,21 @@ func init() {
 	defer ui.Close()
 }
 
+// NewStreamer function is the main entry point for a collection
+// of the pieces from coincap's websocket
 func NewStreamer(coinList []string) *SocketMessage {
 	m := make(map[string]string)
 	for i := 0; i < len(coinList); i++ {
 		m[coinList[i]] = ""
 	}
-	ct := table.NewTable(coinList)
+	// ct := table.NewTable(coinList)
+	ctab := table.NewTabs(coinList)
 	s := SocketMessage{
 		wg:          sync.WaitGroup{},
 		mux:         sync.RWMutex{},
 		Message:     "",
 		Coinlist:    coinList,
-		Table:       *ct,
+		Tab:         *ctab,
 		CoinMap:     m,
 		quitChan:    make(chan struct{}),
 		chanMessage: make(chan map[string]string),
@@ -80,10 +83,9 @@ func (s *SocketMessage) worker() {
 				s.CoinMap[k] = v
 				s.mux.Unlock()
 			}
-			// add RW mutex here for the map string string
-			// do I need a RLock here?
+
 			s.mux.RLock()
-			s.Table.Coins <- s.CoinMap
+			s.Tab.Coins <- s.CoinMap
 			s.mux.RUnlock()
 		}
 	}
@@ -98,7 +100,7 @@ func (s *SocketMessage) QueueCoinData(m map[string]string) bool {
 	}
 }
 
-func (s *SocketMessage) GetCoinData() {
+func (s *SocketMessage) GetCoinData(stopChan chan struct{}) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
@@ -127,6 +129,7 @@ func (s *SocketMessage) GetCoinData() {
 	for {
 		select {
 		case <-done:
+			stopChan <- struct{}{}
 			os.Exit(1)
 		default:
 			m := make(map[string]string)
