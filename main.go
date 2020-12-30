@@ -14,7 +14,7 @@ func main() {
 	if err := ui.Init(); err != nil {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}
-	s := streamer.NewStreamer(os.Args[1:])
-	go s.GetCoinData()
+	coinStreamer := streamer.NewStreamer(os.Args[1:])
+	go coinStreamer.GetCoinData(done)
 	<-done
 }
